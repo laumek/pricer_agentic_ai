@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pricer_agentic_ai"
+version = "0.1.0"
+description = "Autonomous multi-agent AI system for market valuation and deal discovery"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Laureen M."}]
+dependencies = [
+  "pydantic>=2.7",
+  "pydantic-settings>=2.3",
+  "python-dotenv>=1.0",
+  "feedparser>=6.0",
+  "requests>=2.32",
+  "loguru>=0.7",
+  "gradio>=3.40.0,<3.50",
+  "uvicorn>=0.30",
+  "fastapi>=0.114",
+  "scikit-learn>=1.5",
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "chromadb>=0.5",
+  "sentence-transformers>=3.0",
+  "transformers>=4.44",
+  "torch>=2.2; platform_system != 'Darwin' or platform_machine != 'arm64'",
+  "huggingface_hub>=0.13.4,<1.0",
+  "datasets>=3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3", "pytest-cov>=5.0", "ruff>=0.6", "mypy>=1.11", "black>=24.8"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.black]
+line-length = 100
+
