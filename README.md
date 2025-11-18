@@ -1,6 +1,5 @@
 # Full-Stack Agentic AI Pipeline for Market Valuation and Deal Discovery
 
-Autonomous Multi-Agent AI System for Market Valuation and Deal Discovery
 An end-to-end agentic AI system that autonomously scans online deals, estimates fair market prices using multiple AI and ML models, and identifies undervalued opportunities. It integrates data ingestion, embeddings, ensemble modeling, and a Gradio-based UI for human interaction.
 
 🧠 Overview
