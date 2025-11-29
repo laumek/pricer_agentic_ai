@@ -20,7 +20,6 @@ from chromadb.api.models.Collection import Collection
 
 from price_intel.agents.agent import Agent
 
-
 class FrontierAgent(Agent):
 
     name = "Frontier Agent"
@@ -37,23 +36,34 @@ class FrontierAgent(Agent):
         :param collection: a Chroma collection containing product documents & metadata
         """
         self.log("Initializing Frontier Agent")
-        
+
         deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
+        openai_api_key = os.getenv("OPENAI_API_KEY")
         if deepseek_api_key:
             self.client = OpenAI(api_key=deepseek_api_key, base_url="https://api.deepseek.com")
             self.MODEL = "deepseek-chat"
             self.log("Frontier Agent is set up with DeepSeek")
-        else:
-            self.client = OpenAI()
+
+        elif openai_api_key:
+            self.client = OpenAI(api_key=openai_api_key)
             self.MODEL = self.DEFAULT_MODEL
-            self.log("Frontier Agent is sett up with OpenAI")
+            self.log("Frontier Agent is set up with OpenAI")
+
+        else:
+            raise RuntimeError(
+                "No LLM API key found. Provide either:\n"
+                " - OPENAI_API_KEY\n"
+                " - DEEPSEEK_API_KEY\n"
+                "Make sure you called setup_environment() before using FrontierAgent."
+            )
+
 
         self.collection = collection
         self.encoder = SentenceTransformer(self.EMBEDDING_MODEL)
 
         self.log(
             f"Frontier Agent is ready "
-            f"(llm='{self.model_name}', embedding_model='{self.EMBEDDING_MODEL}')"
+            f"(llm='{self.MODEL}', embedding_model='{self.EMBEDDING_MODEL}')"
         )
 
 
