@@ -19,6 +19,10 @@ import chromadb
 from chromadb.api.models.Collection import Collection
 
 from price_intel.agents.agent import Agent
+from price_intel.data.env_setup import setup_environment
+
+# Load API keys from .env and set environment variables
+setup_environment()
 
 class FrontierAgent(Agent):
 

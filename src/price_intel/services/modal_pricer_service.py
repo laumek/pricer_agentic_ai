@@ -28,7 +28,10 @@ image = (
         "accelerate",
         "peft",
     )
+    .env({"HF_HUB_CACHE": CACHE_DIR, "PYTHONPATH": "/root/src"})
+    .add_local_dir("src", "/root/src")
 )
+
 
 # Modal secret for HF token
 secrets = [modal.Secret.from_name("hf-secret")]
@@ -37,7 +40,7 @@ hf_cache_volume = Volume.from_name("hf-hub-cache", create_if_missing=True)
 
 
 @app.cls(
-    image=image.env({"HF_HUB_CACHE": CACHE_DIR}),
+    image=image,
     secrets=secrets,
     gpu=GPU_TYPE,
     timeout=1800,
@@ -77,7 +80,7 @@ class Pricer:
         self.fine_tuned_model = PeftModel.from_pretrained(
             self.base_model,
             FINETUNED_MODEL,
-            revision=REVISION
+            revision=REVISION,
         )
 
     @modal.method()
@@ -98,6 +101,7 @@ class Pricer:
             max_new_tokens=5,
             num_return_sequences=1,
         )
+
         result = self.tokenizer.decode(outputs[0])
 
         contents = result.split("Price is $")[1]

@@ -11,7 +11,7 @@ from sentence_transformers import SentenceTransformer
 import joblib
 from price_intel.agents.agent import Agent
 
-MODEL_DIR = Path(__file__).resolve().parent.parent / "models"
+MODEL_DIR = Path(__file__).resolve().parents[3] / "models"
 
 
 class RandomForestAgent(Agent):
