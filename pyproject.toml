@@ -17,7 +17,7 @@ dependencies = [
   "feedparser>=6.0",
   "requests>=2.32",
   "loguru>=0.7",
-  "gradio>=3.40.0,<3.50",
+  "gradio>=5.47.2",
   "uvicorn>=0.30",
   "fastapi>=0.114",
   "scikit-learn>=1.5",
@@ -32,6 +32,7 @@ dependencies = [
   "openai>=1.0,<2.0",
   "modal>=1.1.4",
   "beautifulsoup4>=4.14.2",
+  "plotly>=6.3.0"
 ]
 
 [project.optional-dependencies]

@@ -11,6 +11,7 @@ RAG-style agent:
 
 import os
 import re
+import torch
 from typing import List, Dict, Tuple
 
 from openai import OpenAI
@@ -63,7 +64,9 @@ class FrontierAgent(Agent):
 
 
         self.collection = collection
-        self.encoder = SentenceTransformer(self.EMBEDDING_MODEL)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.encoder = SentenceTransformer(self.EMBEDDING_MODEL, device=device)
+
 
         self.log(
             f"Frontier Agent is ready "

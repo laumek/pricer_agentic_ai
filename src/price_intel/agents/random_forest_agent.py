@@ -6,6 +6,7 @@ to estimate the price of a product from its description.
 """
 
 import os
+import torch
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
 import joblib
@@ -41,7 +42,10 @@ class RandomForestAgent(Agent):
                 f"Train it with the training script before using this agent."
             )
 
-        self.vectorizer = SentenceTransformer(embedding_model)
+        # self.vectorizer = SentenceTransformer(embedding_model)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.vectorizer = SentenceTransformer(embedding_model, device=device)
+
         self.model = joblib.load(model_path)
 
         self.log(
