@@ -15,8 +15,8 @@ def load_train_items(path: str = "amazon_items_train.pkl"):
     return items
 
 def main():
-    token = setup_environment()
-    login_huggingface(token)
+    setup_environment()
+    login_huggingface()
 
     items = load_train_items()
 

@@ -3,11 +3,9 @@
 import pickle
 from datasets import Dataset, DatasetDict
 from price_intel.data.env_setup import setup_environment, login_huggingface
-# from dotenv import load_dotenv
-# from huggingface_hub import login
 
-token = setup_environment()
-login_huggingface(token)
+setup_environment()
+login_huggingface()
 
 
 with open("amazon_items_train.pkl", "rb") as f:

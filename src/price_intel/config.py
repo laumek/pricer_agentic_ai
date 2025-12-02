@@ -25,3 +25,12 @@ MIN_CONTAINERS = 0  # Change this to 1 if you want Modal to be always running (k
 
 QUESTION = "How much does this cost to the nearest dollar?"
 PREFIX = "Price is $"
+
+
+""" 
+Pushover notification settings
+
+"""
+
+ENABLE_SMS = False
+ENABLE_PUSH = True

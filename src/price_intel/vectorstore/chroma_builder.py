@@ -5,7 +5,7 @@ Handles creation, deletion, and population of a Chroma vectorstore.
 
 import chromadb
 from tqdm import tqdm
-from typing import List, Dict
+from typing import List
 
 from price_intel.vectorstore.description import extract_description
 from price_intel.vectorstore.embedder import Embedder

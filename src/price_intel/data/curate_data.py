@@ -16,8 +16,8 @@ from price_intel.data.sampling_and_split import (
 
 def main():
     # 1. Environment setup and Hugging Face login
-    token = setup_environment()
-    login_huggingface(token)
+    setup_environment()
+    login_huggingface()
 
     # 2. Load all items
     items = load_all_items()
