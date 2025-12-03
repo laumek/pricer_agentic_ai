@@ -3,7 +3,7 @@ import queue
 import threading
 import time
 import gradio as gr
-from price_intel.agents.deal_agent_framework import DealAgentFramework
+from price_intel.agents.main import DealAgentFramework
 from price_intel.agents.deals import Opportunity, Deal
 from price_intel.log_utils import reformat
 import plotly.graph_objects as go
