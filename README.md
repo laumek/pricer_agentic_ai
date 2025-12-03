@@ -103,9 +103,8 @@ pricer.price.remote("product description")
 
 ## 🖥️ Gradio Monitoring Dashboard
 The UI includes:
-* real-time agent logs
 * a table of all discovered deals
-* click-to-alert functionality
+* real-time agent logs
 * 3D embedding visualization (vector DB)
 * automatic refresh (300s)
 ![The Price is laght - Autonomous Agent Framework that hurts lor deals](https://github.com/user-attachments/assets/44d9d9b3-0953-48fc-a6e4-2975816a39df)
