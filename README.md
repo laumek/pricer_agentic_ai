@@ -5,10 +5,6 @@
 This project builds a fully autonomous AI system that scans the web for deals, estimates the *true* market price using an ensemble of models,   and sends real-time push notifications when something is genuinely undervalued.
 It combines **LLMs, classical ML, vector search, fine-tuning, cloud GPUs, Gradio-based UI, and agentic workflows** into a cohesive end-to-end system.
 
-## Overview
-This project builds a fully autonomous AI system that scans the web for deals, estimates the *true* market price using an ensemble of models,   and sends real-time push notifications when something is genuinely undervalued.
-It combines **LLMs, classical ML, vector search, fine-tuning, cloud GPUs, Gradio-based UI, and agentic workflows** into a cohesive end-to-end system.
-
 ## 🧮 Features
 
 * Autonomous Deal Scanning: Constantly monitors RSS feeds for new listings.
@@ -118,9 +114,10 @@ The UI includes:
 ## 🔧 Getting Started to run locally
 
 1. Clone the repository
-```git clone https://github.com/laumek/pricer_agentic_ai.git```
 
-```cd pricer_agentic_ai```
+  ```git clone https://github.com/laumek/pricer_agentic_ai.git```
+
+  ```cd pricer_agentic_ai```
 
 2. Install dependencies from pyproject.toml file
 ```pip install -e .```
