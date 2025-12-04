@@ -25,7 +25,7 @@ class EnsembleAgent(Agent):
     def __init__(
         self,
         collection,
-        model_path: str = "ensemble_model.pkl",
+        model_path: str = "models/ensemble_model.pkl",
     ):
         """
         Initialize the EnsembleAgent by constructing all sub-agents and
