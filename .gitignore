@@ -209,9 +209,14 @@ __marimo__/
 
 
 *.py[cod]
+.pkl
 .ipynb_checkpoints/
 .DS_Store
 .data/
 artifacts/
 models/
 products_vectorstore/
+
+# other docs
+memory.json
+test.ipynb
