@@ -1,3 +1,13 @@
+from pathlib import Path
+
+"""
+Local model files (random forest, ensemble), shared by the agents and training scripts.
+
+"""
+
+MODEL_DIR = Path(__file__).resolve().parents[2] / "models"
+
+
 """
 Specialist model configuration.
 

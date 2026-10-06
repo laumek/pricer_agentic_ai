@@ -18,7 +18,7 @@ It combines **LLMs, classical ML, vector search, fine-tuning, cloud GPUs, Gradio
 | Agent | Purpose |
 |-------|---------|
 | **Scanner Agent** | Scrapes RSS feeds in real-time for new deals |
-| **Frontier Agent (RAG)** | Retrieves similar items (RAG) via embeddings + uses frontier LLM (GPT-4o-mini / DeepSeek) to estimate price |
+| **Frontier Agent (RAG)** | Retrieves similar items (RAG) via embeddings + uses a frontier LLM (GPT-4o-mini / DeepSeek / Claude Haiku 4.5) to estimate price |
 | **Specialist Agent (Fine-Tuned LLM)** | QLoRA fine-tuned model deployed on Modal predicts clean prices |
 | **Random Forest Agent** | Traditional ML model predicting price, trained on sentence-transformer embeddings. |
 | **Ensemble Agent** | Linear model combining all price predictions |
@@ -63,8 +63,19 @@ For every incoming deal:
 ## Ensemble Model (Meta-Model)
 
 The system doesn't rely on one model.  
-It **learns** how to weight them optimally using a trained linear regression:
-FinalPrice = 0.73 * SpecialistLLM +1 .03 * FrontierLLM + 0.44 * RandomForest - 0.64 * MinModel - 0.60 * MaxModel + 26.47
+It **learns** how to weight them optimally using a trained linear regression (fitted with GPT-4o-mini as the Frontier LLM):
+FinalPrice = 0.73 * SpecialistLLM + 1.03 * FrontierLLM + 0.44 * RandomForest - 0.64 * MinModel - 0.60 * MaxModel + 26.47
+
+These weights depend on the Frontier LLM's error profile, so each provider gets its own fit,
+saved as `models/ensemble_model_<provider>.pkl`:
+
+```
+python src/price_intel/train/train_ensemble.py --provider claude
+```
+
+If no fit exists for the active provider, the Ensemble Agent falls back to the original
+`models/ensemble_model.pkl` and logs a warning. If the Frontier Agent can't produce a price,
+the ensemble uses the mean of the Specialist and Random Forest estimates in its place.
 
 ## Specialist Model (Fine-Tuned LLM)
 
@@ -121,24 +132,77 @@ The UI includes:
 2. Install dependencies from pyproject.toml file
 ```pip install -e .```
 
-4. Set up environment variables
+3. Set up environment variables
 
 Use .env.example to create a .env file with your API keys and configuration:
-``` OPENAI_API_KEY=...
+```
+OPENAI_API_KEY=...        # always needed: the Scanner Agent uses gpt-4o-mini
+ANTHROPIC_API_KEY=...     # needed for FRONTIER_PROVIDER=claude
+DEEPSEEK_API_KEY=...      # needed for FRONTIER_PROVIDER=deepseek
+FRONTIER_PROVIDER=openai  # openai | deepseek | claude
 HF_TOKEN=...
 PUSHOVER_USER=...
 PUSHOVER_TOKEN=...
-etc.
 ```
+Never commit your `.env` file (it is in `.gitignore`).
+
 4. Run the system
 ```python src/price_intel/agents/main.py```
 5. Launch the Gradio UI
 ```python src/price_intel/interface/gradio_app.py```
+
+6. Run the tests (no API keys needed)
+```
+pip install -e ".[dev]"
+pytest
+```
+
+## 🤖 Choosing the Frontier LLM
+
+The Frontier Agent supports three providers, selected with `FRONTIER_PROVIDER`:
+
+| Provider | Model | SDK | How the price is read |
+|----------|-------|-----|-----------------------|
+| `openai` | gpt-4o-mini | `openai` | "Price is $" prefill + regex |
+| `deepseek` | deepseek-chat | `openai` (OpenAI-compatible API) | "Price is $" prefill + regex |
+| `claude` | claude-haiku-4-5 | `anthropic` | Structured output: `{"price": number}` |
+
+If `FRONTIER_PROVIDER` is unset, the original behaviour applies: DeepSeek if `DEEPSEEK_API_KEY` is set, otherwise OpenAI.
+Claude doesn't support assistant prefill, so it uses structured outputs instead of parsing free text.
+For every provider, a reply without a usable price returns `None` (and is counted) rather than a silent `0.0`.
+
+## 📊 Benchmarking the Frontier LLMs
+
+`benchmark_frontier.py` runs each provider on the same held-out test items (from the `laureen-ai/pricer-data`
+test split, which needs `HF_TOKEN`). Similar products are retrieved once, so every provider sees identical context,
+and each provider is run several times because LLM outputs vary between runs.
+
+```
+# quick smoke test (a few cents)
+python src/price_intel/train/benchmark_frontier.py --limit 5 --runs 1
+
+# full benchmark: 250 items x 3 runs x 2 providers
+python src/price_intel/train/benchmark_frontier.py --runs 3
+```
+
+Results are printed and saved to `artifacts/benchmarks/<timestamp>/` (`predictions.csv`, `summary.json`).
+Cost is computed from the token usage each API reports.
+
+### Results
+
+_Held-out items: test[0:250] · runs per provider: 3 · date: YYYY-MM-DD_
+
+| Provider (model) | Avg error ($) | Within 20% | Failure rate | Cost / 1,000 estimates | Avg latency |
+|------------------|---------------|------------|--------------|------------------------|-------------|
+| openai (gpt-4o-mini) | | | | | |
+| claude (claude-haiku-4-5) | | | | | |
+
+Error metrics exclude failed estimates, so read them together with the failure rate.
 
 ## 🙌 Acknowledgements
 * Hugging Face datasets for curated product data.
 * SentenceTransformers for embeddings.
 * Modal for deployment and LLM inference.
 * Gradio for rapid UI prototyping.
-* OpenAI / DeepSeek models for RAG and reasoning layers.
+* OpenAI / DeepSeek / Anthropic Claude models for RAG and reasoning layers.
 * This project builds on code from Ed Donner (https://github.com/ed-donner/llm_engineering) under the MIT License. Significant modifications, enhancements, and additional agents have been implemented independently.

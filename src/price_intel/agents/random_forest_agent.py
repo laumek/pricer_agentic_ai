@@ -7,12 +7,10 @@ to estimate the price of a product from its description.
 
 import os
 import torch
-from pathlib import Path
 from sentence_transformers import SentenceTransformer
 import joblib
 from price_intel.agents.agent import Agent
-
-MODEL_DIR = Path(__file__).resolve().parents[3] / "models"
+from price_intel.config import MODEL_DIR
 
 
 class RandomForestAgent(Agent):

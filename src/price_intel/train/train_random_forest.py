@@ -5,16 +5,18 @@ Train a RandomForestRegressor on Chroma embeddings and prices,
 then save it as `random_forest_model.pkl`.
 """
 
-from pathlib import Path
 import numpy as np
 import joblib
 from sklearn.ensemble import RandomForestRegressor
 import chromadb
 
+from price_intel.config import MODEL_DIR
+
 
 DB_PATH = "products_vectorstore"
 COLLECTION_NAME = "products"
-MODEL_PATH = "src/price_intel/models/random_forest_model.pkl"
+# Same location RandomForestAgent loads from
+MODEL_PATH = MODEL_DIR / "random_forest_model.pkl"
 
 
 def load_chroma_vectors(db_path: str, collection_name: str):
